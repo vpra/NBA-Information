@@ -1,0 +1,27 @@
+#PREFACE THIS WITH THIS IS INCOMPLETE. ALL DATA IS HERE. IS DISORGANIZED. 
+import xlrd
+file = "C:/Users/Vishnu/Documents/BasketballInfo/nbaURLs.xlsx"
+workbook = xlrd.open_workbook(file)
+sheet = workbook.sheet_by_index(0)
+urls = []
+for x in range(0,4372):
+	urls.append(sheet.cell_value(x,0))
+from urllib2 import urlopen
+from bs4 import BeautifulSoup
+listOfSoups = []
+#Jeff Ayres name change
+#JJ Barea name change
+#Metta World Peace name change
+allData = []
+for x in range(0,4372):
+	html = urlopen(urls[x])
+	soup = BeautifulSoup(html, "html.parser")
+	listOfSoups.append(soup)
+for x in range(0,len(listOfSoups)):
+	data = listOfSoups[x].findAll(id = 'all_per_game')
+	arc = []
+	for i in range(len(data)):
+		for tr in data[i].findAll('tr'):
+			arc.append(tr.getText())
+	allData.append(arc)
+#allData now contains a very disorganized list of season averages
