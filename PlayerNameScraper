@@ -36,8 +36,11 @@ for x in range(0,len(players)):
 	dash = currentPlayer.find("-")
 	if(dash!=-1):
 		currentPlayer = currentPlayer[:dash] + currentPlayer[dash+1:]
+	period = currentPlayer.find(".")
+	if(period!=-1):
+		currentPlayer = currentPlayer[:period] + currentPlayer[period+1:]
 	players[x] = currentPlayer
-#players now holds names without dashes and apostrophes
+#players now holds names without dashes and apostrophes and periods
 import xlwt
 wb = xlwt.Workbook()
 ws = wb.add_sheet("Players")
