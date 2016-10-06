@@ -1,0 +1,46 @@
+#THIS FILE CREATES AN EXCEL FILE WITH THE NAME OF EVERY NBA PLAYER EVER
+from urllib2 import urlopen
+from bs4 import BeautifulSoup
+letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","y","z"]
+letterURLs = []
+for x in range(0,len(letters)):
+	a = letters[x]
+	a = "http://www.basketball-reference.com/players/" + a + "/"
+	letterURLs.append(a)
+#letterURLs holds the urls of the pages with players with last names starting with a certain letter
+listOfSoups = []
+for x in range(0,len(letterURLs)):
+	html = urlopen(letterURLs[x])
+	soup = BeautifulSoup(html,"html.parser")
+	listOfSoups.append(soup)
+#listOfSoups holds the soups for each of the urls in letterURLs
+players = []
+#Everything up until line 23, the next comment, was initally written by NylonCalculus
+for x in range(0,len(listOfSoups)):
+	data = listOfSoups[x].findAll('tr')[1:]
+	player_data = [[th.getText() for th in data[i].findAll('th')] for i in range(len(data))]
+	for y in range(0,len(player_data)):
+		players.append(player_data[y][0])
+#players holds all the players (4372!): this list is unedited as of line 22
+for x in range(0,len(players)):
+	currentPlayer = players[x]
+	if(currentPlayer[len(currentPlayer) - 1] == '*'):
+		currentPlayer = currentPlayer[0:len(currentPlayer)-1]
+		players[x] = currentPlayer
+#players now holds names without asterisks to denote Hall Of Fame Status
+for x in range(0,len(players)):
+	currentPlayer = players[x]
+	apostrophe = currentPlayer.find("'")
+	if(apostrophe!=-1):
+		currentPlayer = currentPlayer[:apostrophe] + currentPlayer[apostrophe+1:]
+	dash = currentPlayer.find("-")
+	if(dash!=-1):
+		currentPlayer = currentPlayer[:dash] + currentPlayer[dash+1:]
+	players[x] = currentPlayer
+#players now holds names without dashes and apostrophes
+import xlwt
+wb = xlwt.Workbook()
+ws = wb.add_sheet("Players")
+for x in range(0,len(players)):
+	ws.write(x,0,players[x])
+wb.save("nbaNames.xls")
