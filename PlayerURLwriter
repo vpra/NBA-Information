@@ -1,0 +1,58 @@
+#THIS FILE USES A LIST OF PLAYER NAMES TO CREATE BASKETBALL-REFERENCE.COM URLS
+import xlrd
+file = "C:/Users/Vishnu/Documents/BasketballInfo/nbaNames.xlsx"
+workbook = xlrd.open_workbook(file)
+sheet = workbook.sheet_by_index(0)
+players = []
+for x in range(0,4372):
+	players.append(sheet.cell_value(x,0))
+def lastIndexOf(prevIndex, name, charac):
+	position = name.find(charac)
+	if(position == -1): return prevIndex
+	else:
+		return(lastIndexOf(position, name[position+1:],charac))
+playerURLs = []
+for x in range(0,len(players)):
+	name = players[x]
+	url = "http://www.basketball-reference.com/players/"
+	lastNameStart = lastIndexOf(0,name," ") + 1
+	url = url + name[lastNameStart] + "/"
+	lastNameLength = len(name) - lastNameStart
+	if(lastNameLength<=5):
+		url = url + name[lastNameStart:len(name)]
+	else:
+		url = url + name[lastNameStart:lastNameStart+5]
+	url = url + name[0:2]
+	url = url + "01.html"
+	playerURLs.append(url)
+#playerURLs now contains urls with repetitions based on name
+for x in range(0,len(playerURLs)-1):
+	if(playerURLs[x] == playerURLs[x+1]):
+		playerurl = playerURLs[x]
+		playerurl = playerurl[0:len(playerurl)-7] + "02.html"
+		playerURLs[x] = playerurl
+for x in range(0,len(playerURLs)-1):
+	if(playerURLs[x] == playerURLs[x+1]):
+		playerurl = playerURLs[x]
+		playerurl = playerurl[0:len(playerurl)-7] + "03.html"
+		playerURLs[x] = playerurl
+for x in range(0,len(playerURLs)-1):
+	if(playerURLs[x] == playerURLs[x+1]):
+		playerurl = playerURLs[x]
+		playerurl = playerurl[0:len(playerurl)-7] + "04.html"
+		playerURLs[x] = playerurl
+for x in range(0,len(playerURLs)-1):
+	if(playerURLs[x] == playerURLs[x+1]):
+		playerurl = playerURLs[x]
+		playerurl = playerurl[0:len(playerurl)-7] + "05.html"
+		playerURLs[x] = playerurl
+for x in range(0,len(playerURLs)):
+	wanted = playerURLs[x]
+	wanted = wanted.lower()
+	playerURLs[x] = wanted
+import xlwt
+wb = xlwt.Workbook()
+ws = wb.add_sheet("URLs")
+for x in range(0,len(playerURLs)):
+	ws.write(x,0,playerURLs[x])
+wb.save("nbaURLs.xls")
