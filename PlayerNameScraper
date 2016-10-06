@@ -39,6 +39,8 @@ for x in range(0,len(players)):
 	period = currentPlayer.find(".")
 	if(period!=-1):
 		currentPlayer = currentPlayer[:period] + currentPlayer[period+1:]
+	if(period!=-1):
+		currentPlayer = currentPlayer[:period] + currentPlayer[period+1:]
 	players[x] = currentPlayer
 #players now holds names without dashes and apostrophes and periods
 import xlwt
