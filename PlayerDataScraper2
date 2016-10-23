@@ -1,0 +1,85 @@
+#A slightly modifed version of PlayerDataScraper, this script prevents the loss of internet access from basketball-reference.com by adding a 30 second sleep timer every 50 websites
+import xlrd
+import xlsxwriter
+import time
+#The URL file in this program has been manually modified to account for NBA player name changes. For example, Ron Artest to Metta World Peace
+file = "C:/Users/Vishnu/Documents/BasketballInfo/nbaURLs.xlsx"
+workbook = xlrd.open_workbook(file)
+sheet = workbook.sheet_by_index(0)
+urls = []
+file2 = "C:/Users/Vishnu/Documents/BasketballInfo/nbaNames.xlsx"
+workbook2 = xlrd.open_workbook(file2)
+sheet2 = workbook2.sheet_by_index(0)
+names = []
+for x in range(0,4372):
+	urls.append(sheet.cell_value(x,0))
+	names.append(sheet2.cell_value(x,0))
+from urllib2 import urlopen
+from bs4 import BeautifulSoup
+allData = []
+n = -1
+for overall in range (0,87):
+	listOfSoups = []
+	for x in range(overall*50,overall*50+50):
+		print(x)
+		html = urlopen(urls[x])
+		soup = BeautifulSoup(html, "html.parser")
+		listOfSoups.append(soup)
+	for q in range(0,len(listOfSoups)):
+		n = n + 1
+		data = listOfSoups[q].findAll(id = 'all_per_game')
+		for y in range(len(data)):
+			data2 = data[y].findAll('tbody')
+			for z in range(len(data2)):
+				data3 = data2[z].findAll('tr')
+				#data3 holds the table data, finally
+				for a in range(len(data3)):
+					eachYear = [names[n]]
+					data4 = data3[a].findAll('th')
+					#This is the years
+					for b in range(len(data4)):
+						eachYear.append(data4[b].getText())
+					data5 = data3[a].findAll('td')
+					#This is everything else
+					for c in range(len(data5)):
+						eachYear.append(data5[c].getText())
+					allData.append(eachYear)
+	string = 'PlayerData' + str(overall) + '.xlsx'
+	wb = xlsxwriter.Workbook(string)
+	ws = wb.add_worksheet()
+	for x in range(0,len(allData)):
+		for y in range(0,len(allData[x])):
+			ws.write(x,y,allData[x][y])
+	wb.close()
+	time.sleep(15)
+listOfSoups = []
+for x in range(4350,4372):
+	print(x)
+	html = urlopen(urls[x])
+	soup = BeautifulSoup(html, "html.parser")
+	listOfSoups.append(soup)
+for q in range(0,len(listOfSoups)):
+	n = n + 1
+	data = listOfSoups[q].findAll(id = 'all_per_game')
+	for y in range(len(data)):
+		data2 = data[y].findAll('tbody')
+		for z in range(len(data2)):
+			data3 = data2[z].findAll('tr')
+			#data3 holds the table data, finally
+			for a in range(len(data3)):
+				eachYear = [names[n]]
+				data4 = data3[a].findAll('th')
+				#This is the years
+				for b in range(len(data4)):
+					eachYear.append(data4[b].getText())
+				data5 = data3[a].findAll('td')
+				#This is everything else
+				for c in range(len(data5)):
+					eachYear.append(data5[c].getText())
+				allData.append(eachYear)
+wb = xlsxwriter.Workbook('PlayerDataFinal')
+ws = wb. add_worksheet()
+for x in range(0,len(allData)):
+	for y in range(0,len(allData[x])):
+		ws.write(x,y,allData[x][y])
+wb.close()
