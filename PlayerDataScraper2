@@ -77,7 +77,7 @@ for q in range(0,len(listOfSoups)):
 				for c in range(len(data5)):
 					eachYear.append(data5[c].getText())
 				allData.append(eachYear)
-wb = xlsxwriter.Workbook('PlayerDataFinal')
+wb = xlsxwriter.Workbook('PlayerDataFinal.xlsx')
 ws = wb. add_worksheet()
 for x in range(0,len(allData)):
 	for y in range(0,len(allData[x])):
